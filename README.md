@@ -7,9 +7,10 @@ This Android Calculator application is built entirely using Jetpack Compose, the
 ### Features 
 - Basic arithmetic operations: addition, subtraction, multiplication, and division.
 - Clear button to reset the input.
+- History
 - Decimal point for precise calculations.
 ### Future Updates 
-- Dark and dynamic theme support
+- Dark and Material You theme support
 - Responsive layout that adapts to different screen sizes.
 ### Preview
 <img src="https://github.com/junaidahmed57/simple-calculator-with-compose/assets/32070197/c0129f7e-0dee-4387-9c5e-cd9d5a4140f8" width="17%" >
