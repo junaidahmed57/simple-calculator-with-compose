@@ -42,10 +42,15 @@ class CalculatorViewModel: ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     fun onNumberInput(value: String){
-        val result = calculateResult(uiState.value.input.plus(value))
+
+        var input = uiState.value.input.plus(value)
+        if (uiState.value.result.isEmpty())
+            input = value
+
+        val result = isResultInteger(calculateResult(input))
         _uiState.update {
             uiState.value.copy(
-                input = it.input.plus(value),
+                input = input,
                 result = "= ".plus(result)
             )
         }
@@ -82,29 +87,31 @@ class CalculatorViewModel: ViewModel() {
     fun onSymbolInput(input: String){
         if (uiState.value.input.isEmpty()) return
 
-        val expression = uiState.value.input
+        var expression = uiState.value.input
+        var result = ""
         val listOfOperators = uiState.value.symbols.toMutableList()
 
         if (expression.last().isDigit()) {
             listOfOperators.add(input)
-
-            _uiState.update {
-                uiState.value.copy(
-                    input = expression.plus(input),
-                    symbols = listOfOperators
-                )
-            }
+            expression = expression.plus(input)
+            result = isResultInteger(calculateResult(expression))
         }
         else {
             listOfOperators.removeLast()
             listOfOperators.add(input)
-
-            _uiState.update {
-                uiState.value.copy(
-                    input = expression.replace(expression.last().toString(),input)
-                )
-            }
+            expression = expression.replace(expression.last().toString(),input)
+            result = isResultInteger(calculateResult(expression))
         }
+
+
+        _uiState.update {
+            uiState.value.copy(
+                input = expression,
+                result = "= ".plus(result),
+                symbols = listOfOperators
+            )
+        }
+
     }
 
     fun onEqualClicked(){
@@ -132,7 +139,7 @@ class CalculatorViewModel: ViewModel() {
     fun onDeleteClicked(){
         if (uiState.value.input.isEmpty()) return
         val expressionToSolve = uiState.value.input.substring(0,uiState.value.input.length-1)
-        val result = calculateResult(expressionToSolve)
+        val result = isResultInteger(calculateResult(expressionToSolve))
         _uiState.update {
             uiState.value.copy(
                 input = expressionToSolve,
@@ -146,6 +153,12 @@ class CalculatorViewModel: ViewModel() {
             list
         else
             list + listOf(input, result)
+    }
+
+    private fun isResultInteger(value: String): String {
+        return if (value.endsWith(".0"))
+                    value.replace(".0", "")
+                else value
     }
 
 }
