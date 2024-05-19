@@ -97,9 +97,9 @@ class CalculatorViewModel: ViewModel() {
             result = isResultInteger(calculateResult(expression))
         }
         else {
+            expression = expression.replace(expression.last().toString(),input)
             listOfOperators.removeLast()
             listOfOperators.add(input)
-            expression = expression.replace(expression.last().toString(),input)
             result = isResultInteger(calculateResult(expression))
         }
 
